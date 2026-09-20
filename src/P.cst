@@ -1,0 +1,17 @@
+// uart_loopback.cst
+// Minimal constraints for uart_top.v -- a plain echo test with NO SDR
+// logic involved. Use this to isolate whether the basic serial link
+// (pins, baud rate, wiring, driver) works at all, before trusting any
+// result from the full sdr_top design.
+
+IO_LOC  "uart_tx" C3;
+IO_PORT "uart_tx" IO_TYPE=LVCMOS33;
+
+IO_LOC  "uart_rx" B3;
+IO_PORT "uart_rx" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// TODO: same placeholder as before -- fill in with your board's actual
+// confirmed 50MHz clock pin. If you already resolved this for the main
+// sdr_top build, use that exact same value here.
+IO_LOC  "clk" E2;
+IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
