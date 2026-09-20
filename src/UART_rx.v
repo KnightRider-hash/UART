@@ -1,5 +1,6 @@
-module UART(
+module UART_rx(
     output reg [7:0] data_out,
+    output reg data_valid,
     input clk,
     input dain
 );
@@ -9,7 +10,7 @@ reg [2:0] bit_cnt;
 reg [25:0] acc;
 reg [3:0] b_c; // for adjusting the tick and ensure bit not noise logic
 parameter CLK_FREQ = 50_000_000; // clock speed (The Bucket)
-parameter BAUD_RATE = 1843200;   // desired speed (The Pour)
+parameter BAUD_RATE = 14_745_600;   // 16x oversample of 921600 baud
 
 reg [1:0] state;
 
@@ -41,6 +42,7 @@ if(Tick)begin
  case(state) 
   2'b00:if(dain==1'b0) begin
       state<=2'b01;
+      data_valid <= 1'b0;
       b_c<=0;
       bit_cnt<=0;
       end
@@ -78,9 +80,11 @@ if(Tick)begin
         
 
    2'b11: begin 
+   data_valid <= 1'b1;
            if(b_c==4'b1111)begin
             state<=2'b00;
             b_c<=0;
+            data_valid <= 1'b0;
             end
         else begin 
           b_c<=b_c+1'b1;    
